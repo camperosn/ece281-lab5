@@ -113,11 +113,11 @@ architecture top_basys3_arch of top_basys3 is
     end component button_debounce;
     
     -- signals
-    signal w_clk, w_action, w_sign : std_logic := '0';
+    signal w_clk, w_action, w_sign_pre : std_logic := '0';
     signal w_A, w_B : std_logic_vector(7 downto 0);
-    signal w_o_result, w_ALU_mux, w_seg_mux : std_logic_vector(7 downto 0);
-    signal w_o_flags, w_cycle, w_hund, w_tens, w_ones, w_sel, w_data : std_logic_vector(3 downto 0);
-    signal o_sign,
+    signal w_seg_mux : std_logic_vector(6 downto 0);
+    signal w_o_result, w_ALU_mux : std_logic_vector(7 downto 0);
+    signal w_o_flags, w_cycle, w_hund, w_tens, w_ones, w_sel, w_data, w_sign_post : std_logic_vector(3 downto 0);
     
 begin
 	-- PORT MAPS ----------------------------------------
@@ -158,7 +158,7 @@ begin
     twos_comp_inst_0 : twos_comp
         port map (
             i_bin => w_ALU_mux,
-            o_sign => w_sign,
+            o_sign => w_sign_pre,
             o_hund => w_hund,
             o_tens => w_tens,
             o_ones => w_ones
@@ -170,16 +170,16 @@ begin
         port map (
             i_clk => w_clk,
             i_reset => btnU,
-            i_D3 => w_sign,
+            i_D3 => w_sign_post,
             i_D2 => w_hund,
             i_D1 => w_tens,
-            i_D0 => w_ones
+            i_D0 => w_ones,
             o_data => w_data,
             o_sel => w_sel
         );
         
     sevenseg_decoder_inst_0 : sevenseg_decoder
-        port (
+        port map (
             i_Hex => w_data,
             o_seg_n => w_seg_mux
         );
@@ -196,18 +196,22 @@ begin
 	begin
 	   if rising_edge(clk) then
 	       if btnU = '1' then
-	           i_A <= "00000000";
-	           i_B <= "00000000";
+	           w_A <= "00000000";
+	           w_B <= "00000000";
 	       else
                if w_cycle(1) = '1' then
-                   i_A <= sw(7 downto 0);
+                   w_A <= sw(7 downto 0);
                end if;
                if w_cycle(2) = '1' then
-                   i_B <= sw(7 downto 0);
+                   w_B <= sw(7 downto 0);
                end if;
            end if;
 	    end if;
 	end process registers_proc;
+	
+	-- Account for sign not matching TDM expectations
+	w_sign_post <= "1111" when (w_sign_pre = '1') else
+	               "0000";
 	
 	
 	-- Multiplexer out of the ALU
@@ -221,7 +225,7 @@ begin
            w_sel;
            
     -- Multiplexer out of seven seg decoder
-	seg <= "11111110" when (o_sel(3) = '1' AND w_sign = '1') else
+	seg <= "1111110" when (w_sel(3) = '1' AND w_sign_pre = '1') else
 	       w_seg_mux;
 	
 	
