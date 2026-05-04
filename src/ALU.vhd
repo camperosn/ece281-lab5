@@ -51,26 +51,44 @@ architecture Behavioral of ALU is
     
     signal w_sum : std_logic_vector(7 downto 0);
     signal w_c_out : std_logic := '0';
-    signal w_c_in : std_logic := '0';
+    signal w_ALU_b_in, w_result: std_logic_vector(7 downto 0);
+    signal w_v_1, w_v_2, w_vc_1 : std_logic := '0';
 
 begin
 
 	ripple_adder_0 : ripple_adder 
 	port map (
 	   A => i_A,
-	   B => i_B,
-	   Cin => w_c_in,
+	   B => w_ALU_b_in,
+	   Cin => i_op(0),
 	   S => w_sum,
 	   Cout => w_c_out
 	);
     
+    
+    
     -- this is missing flags, it is also only able to add right now
     -- but it needs to be able to subtract to..
-    o_result <= w_sum when i_op = "000" else
+    w_result <= w_sum when i_op = "000" else
                 w_sum when i_op = "001" else
-                (i_A OR i_B) when i_op = "010" else
-                (i_A AND i_B) when i_op = "011" else
+                (i_A AND i_B) when i_op = "010" else
+                (i_A OR i_B) when i_op = "011" else
                 "00000000";
+    o_result <= w_result;
+                
+    w_ALU_b_in <= i_B when i_op(0) = '0' else
+                  (NOT i_B);
+                  
+    w_v_1 <= NOT (i_op(0) XOR i_A(7) XOR i_B(7));
+    w_v_2 <= i_A(7) XOR w_sum(7);
+    w_vc_1 <= NOT i_op(1);
+    
+    o_flags(0) <= w_v_1 AND w_v_2 AND w_vc_1;
+    o_flags(1) <= w_vc_1 AND w_c_out;
+    o_flags(2) <= '1' when w_result = "00000000" else
+                  '0';
+    o_flags(3) <= w_result(7);
+    
     
 
 

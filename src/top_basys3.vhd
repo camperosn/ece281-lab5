@@ -95,6 +95,7 @@ architecture top_basys3_arch of top_basys3 is
                o_flags : out STD_LOGIC_VECTOR (3 downto 0));
     end component ALU;
     
+    
     component twos_comp is
         port (
             i_bin: in std_logic_vector(7 downto 0);
@@ -216,9 +217,9 @@ begin
 	
 	-- Multiplexer out of the ALU
     w_ALU_mux <= w_A when (w_cycle(1) = '1') else
-        w_B when (w_cycle(2) = '1') else
-        w_o_result when (w_cycle(3) = '1') else
-       "00000000";
+                 w_B when (w_cycle(2) = '1') else
+                 w_o_result when (w_cycle(3) = '1') else
+                "00000000";
        
     -- Multiplexer out of o_sel and into 'an'
     an <= "1111" when (w_cycle(0) = '1') else
