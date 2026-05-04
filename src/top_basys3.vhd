@@ -200,11 +200,13 @@ begin
 	           w_A <= "00000000";
 	           w_B <= "00000000";
 	       else
-               if w_cycle(1) = '1' then
-                   w_A <= sw(7 downto 0);
-               end if;
-               if w_cycle(2) = '1' then
-                   w_B <= sw(7 downto 0);
+	           if w_action = '1' then
+                   if w_cycle(1) = '1' then
+                       w_A <= sw(7 downto 0);
+                   end if;
+                   if w_cycle(2) = '1' then
+                       w_B <= sw(7 downto 0);
+                   end if;
                end if;
            end if;
 	    end if;
@@ -229,6 +231,10 @@ begin
 	seg <= "1111110" when (w_sel(3) = '1' AND w_sign_pre = '1') else
 	       w_seg_mux;
 	
+	led(3 downto 0) <= w_cycle;
+	led(15 downto 12) <= w_o_flags;
+    led(14 downto 4) <= (others => '0');
+
 	
 	
 end top_basys3_arch;

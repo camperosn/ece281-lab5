@@ -39,7 +39,31 @@ end controller_fsm;
 
 architecture FSM of controller_fsm is
 
+    type cycle is (cycle1, cycle2, cycle3, cycle4);
+    signal current_cycle, next_cycle : cycle;
+
 begin
 
+    next_cycle <= cycle2 when current_cycle = cycle1 else
+                  cycle3 when current_cycle = cycle2 else
+                  cycle4 when current_cycle = cycle3 else
+                  cycle1;
+                  
+    with current_cycle select
+    o_cycle <=  "0001" when cycle1,
+                "0010" when cycle2,
+                "0100" when cycle3,
+                "1000" when cycle4;
+                
+    state_register : process(i_adv)
+    begin
+       if rising_edge(i_adv) then
+          if (i_reset = '1') then
+              current_cycle <= cycle1;
+          else
+             current_cycle <= next_cycle;
+          end if;
+       end if;
+    end process state_register;
 
 end FSM;

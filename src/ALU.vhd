@@ -66,9 +66,7 @@ begin
 	);
     
     
-    
-    -- this is missing flags, it is also only able to add right now
-    -- but it needs to be able to subtract to..
+  
     w_result <= w_sum when i_op = "000" else
                 w_sum when i_op = "001" else
                 (i_A AND i_B) when i_op = "010" else
