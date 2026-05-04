@@ -55,14 +55,12 @@ begin
                 "0100" when cycle3,
                 "1000" when cycle4;
                 
-    state_register : process(i_adv)
+    state_register : process(i_adv, i_reset)
     begin
-       if rising_edge(i_adv) then
-          if (i_reset = '1') then
-              current_cycle <= cycle1;
-          else
-             current_cycle <= next_cycle;
-          end if;
+        if (i_reset = '1') then
+            current_cycle <= cycle1;
+        elsif rising_edge(i_adv) then
+         current_cycle <= next_cycle;
        end if;
     end process state_register;
 

@@ -126,7 +126,7 @@ begin
     button_debounce_inst_0 : button_debounce
         port map (
             clk => clk,
-            reset => btnU,
+            reset => '0',
             button => btnC,
             action => w_action
         );
@@ -170,7 +170,7 @@ begin
         generic map (k_WIDTH => k_IO_WIDTH)
         port map (
             i_clk => w_clk,
-            i_reset => btnU,
+            i_reset => btnL,
             i_D3 => w_sign_post,
             i_D2 => w_hund,
             i_D1 => w_tens,
@@ -228,12 +228,14 @@ begin
            w_sel;
            
     -- Multiplexer out of seven seg decoder
-	seg <= "1111110" when (w_sel(3) = '1' AND w_sign_pre = '1') else
+    -- also remember, o_SEL is one cold, so we want to check
+    -- if the bit specifying negative is 0
+	seg <= "0111111" when (w_sel(3) = '0' AND w_sign_pre = '1') else
 	       w_seg_mux;
 	
 	led(3 downto 0) <= w_cycle;
 	led(15 downto 12) <= w_o_flags;
-    led(14 downto 4) <= (others => '0');
+    led(11 downto 4) <= (others => '0');
 
 	
 	

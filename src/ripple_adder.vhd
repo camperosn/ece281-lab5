@@ -72,7 +72,7 @@ begin
         B     => B(3),
         Cin   => w_carry(2),
         S     => S(3),
-        Cout  => Cout
+        Cout  => w_carry(3)
     );
     
     full_adder_4: full_adder
@@ -81,7 +81,7 @@ begin
         B     => B(4),
         Cin   => w_carry(3),
         S     => S(4),
-        Cout  => Cout
+        Cout  => w_carry(4)
     );
     
     full_adder_5: full_adder
@@ -90,7 +90,7 @@ begin
         B     => B(5),
         Cin   => w_carry(4),
         S     => S(5),
-        Cout  => Cout
+        Cout  => w_carry(5)
     );
     
     full_adder_6: full_adder
@@ -99,7 +99,7 @@ begin
         B     => B(6),
         Cin   => w_carry(5),
         S     => S(6),
-        Cout  => Cout
+        Cout  => w_carry(6)
     );
     
     full_adder_7: full_adder

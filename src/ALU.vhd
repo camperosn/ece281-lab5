@@ -50,9 +50,9 @@ architecture Behavioral of ALU is
     end component;
     
     signal w_sum : std_logic_vector(7 downto 0);
-    signal w_c_out : std_logic := '0';
+    signal w_c_out : std_logic;
     signal w_ALU_b_in, w_result: std_logic_vector(7 downto 0);
-    signal w_v_1, w_v_2, w_vc_1 : std_logic := '0';
+    signal w_v_1, w_v_2, w_vc_1 : std_logic;
 
 begin
 
